@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy New Year with Responsive Fireworks</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(120deg, #000428, #004e92);
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+
+    h1 {
+      font-size: calc(2rem + 2vw); /* Responsive font size */
+      color: #ff0000;
+      margin-bottom: 10vh;
+      text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.7);
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 4px solid transparent;
+      animation: typing 3s steps(20, end), blink 0.6s step-end infinite, glow-text 1.5s infinite alternate;
+      width: 0; /* Hidden initially for typing effect */
+      z-index: 2;
+    }
+
+    .heart {
+      position: relative;
+      width: 15vw; /* Responsive size */
+      height: 15vw; /* Responsive size */
+      background-color: transparent;
+      transform: rotate(-45deg);
+      animation: draw-heart 2s linear forwards, pulse 1.2s infinite 2.5s;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+      z-index: 2;
+    }
+
+    .heart:before,
+    .heart:after {
+      content: '';
+      position: absolute;
+      width: 15vw; /* Responsive size */
+      height: 15vw; /* Responsive size */
+      background-color: red;
+      border-radius: 50%;
+      clip-path: circle(0% at center); /* Hidden initially */
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+    }
+
+    .heart:before {
+      top: -7.5vw; /* Half of the heart's size */
+      left: 0;
+      animation: reveal 2s linear forwards 0.5s;
+    }
+
+    .heart:after {
+      top: 0;
+      left: 7.5vw; /* Half of the heart's size */
+      animation: reveal 2s linear forwards 0.5s;
+    }
+
+    /* Firework particles */
+    .particle {
+      position: absolute;
+      width: 1vw; /* Responsive size */
+      height: 1vw; /* Responsive size */
+      max-width: 10px; /* Limit maximum size */
+      max-height: 10px; /* Limit maximum size */
+      border-radius: 50%;
+      background-color: #ffcc00;
+      animation: move 1.5s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+      to {
+        width: 15ch; /* Adjust this based on text length */
+      }
+    }
+
+    @keyframes blink {
+      from, to {
+        border-color: transparent;
+      }
+      50% {
+        border-color: #ff0000;
+      }
+    }
+
+    @keyframes glow-text {
+      from {
+        text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.5);
+      }
+      to {
+        text-shadow: 4px 4px 20px rgba(255, 0, 0, 1);
+        width: 40%;
+      }
+    }
+
+    @keyframes draw-heart {
+      0% {
+        background-color: transparent;
+      }
+      100% {
+        background-color: red;
+      }
+    }
+
+    @keyframes reveal {
+      0% {
+        clip-path: circle(0% at center);
+      }
+      100% {
+        clip-path: circle(50% at center);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1) rotate(-45deg);
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+      }
+      50% {
+        transform: scale(1.2) rotate(-45deg);
+        box-shadow: 0 0 25px rgba(255, 0, 0, 1);
+      }
+    }
+
+    @keyframes move {
+      0% {
+        transform: translate(0, 0);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--x), var(--y));
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Happy New Year!</h1>
+  <div class="heart"></div>
+
+  <!-- Sound Effects -->
+  <audio id="fireworkSound" src="https://www.soundjay.com/button/sounds/button-30.mp3"></audio>
+
+  <script>
+    function createFirework() {
+      const particleCount = 20; // Number of particles per firework
+      const centerX = Math.random() * window.innerWidth; // Random x position
+      const centerY = Math.random() * window.innerHeight; // Random y position
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+
+        // Random angle and distance
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.min(window.innerWidth, window.innerHeight) * 0.05; // Maximum distance of 5% of viewport
+
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+
+        // Set custom properties for the animation
+        particle.style.setProperty('--x', `${x}px`);
+        particle.style.setProperty('--y', `${y}px`);
+        particle.style.left = `${centerX}px`;
+        particle.style.top = `${centerY}px`;
+
+        // Random color
+        particle.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 50%)`;
+
+        document.body.appendChild(particle);
+
+        // Remove the particle after animation
+        particle.addEventListener('animationend', () => {
+          particle.remove();
+        });
+      }
+
+      // Play firework sound
+      const fireworkSound = document.getElementById('fireworkSound');
+      fireworkSound.currentTime = 0; // Reset sound to start
+      fireworkSound.play();
+    }
+
+    // Create multiple fireworks at intervals
+    setInterval(createFirework, 300); // Create a firework every 300ms
+  </script>
+</body>
+</html>
